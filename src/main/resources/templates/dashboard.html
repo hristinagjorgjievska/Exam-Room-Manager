@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h1>Добредојде, <span th:text="${professor.getFullName()}"></span></h1>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+<h2>Your Subjects</h2>
+
+<p th:if="${#lists.isEmpty(subjects)}">You have no subjects assigned.</p>
+
+<div th:each="subject : ${subjects}">
+    <a th:href="@{/exam/calendar(subjectId=${subject.id})}">
+        <div>
+            <h3 th:text="${subject.name}"></h3>
+        </div>
+    </a>
+</div>
+
+</body>
+</html>
