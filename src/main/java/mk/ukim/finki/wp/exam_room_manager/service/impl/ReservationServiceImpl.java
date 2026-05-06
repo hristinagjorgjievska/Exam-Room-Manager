@@ -3,6 +3,7 @@ package mk.ukim.finki.wp.exam_room_manager.service.impl;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.wp.exam_room_manager.model.Classroom;
 import mk.ukim.finki.wp.exam_room_manager.model.Reservation;
+import mk.ukim.finki.wp.exam_room_manager.model.exceptions.ReservationNotFoundException;
 import mk.ukim.finki.wp.exam_room_manager.repository.ReservationRepository;
 import mk.ukim.finki.wp.exam_room_manager.service.ReservationService;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,36 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
         return reservationRepository.saveAll(reservations);
+    }
+
+    @Override
+    public List<Reservation> findAll() {
+        return reservationRepository.findAll();
+    }
+
+    @Override
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id).orElseThrow(() -> new ReservationNotFoundException(id));
+    }
+
+    @Override
+    public Reservation create(Reservation reservation) {
+        if (hasConflict(reservation)) {
+            throw new RuntimeException("Reservation conflict exists");
+        }
+        return reservationRepository.save(reservation);
+    }
+
+    @Override
+    public Reservation update(Long id, Reservation reservation) {
+        Reservation existingReservation = reservationRepository.findById(id).orElseThrow(() -> new ReservationNotFoundException(id));
+        existingReservation.setClassroom(reservation.getClassroom());
+        existingReservation.setExam(reservation.getExam());
+        return reservationRepository.save(existingReservation);
+    }
+
+    @Override
+    public void delete(Long id) {
+        this.reservationRepository.deleteById(id);
     }
 }

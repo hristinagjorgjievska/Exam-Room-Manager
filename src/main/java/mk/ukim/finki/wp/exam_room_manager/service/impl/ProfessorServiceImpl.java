@@ -2,12 +2,12 @@ package mk.ukim.finki.wp.exam_room_manager.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.wp.exam_room_manager.model.Professor;
+import mk.ukim.finki.wp.exam_room_manager.model.exceptions.UsernameNotFoundException;
 import mk.ukim.finki.wp.exam_room_manager.repository.ProfessorRepository;
 import mk.ukim.finki.wp.exam_room_manager.service.ProfessorService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ProfessorServiceImpl implements ProfessorService, UserDetailsServic
 
     @Override
     public Professor findByUsername(String username) {
-        return professorRepository.findByUsername(username).orElseThrow();
+        return professorRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     @Override

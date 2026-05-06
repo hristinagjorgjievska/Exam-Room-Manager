@@ -8,13 +8,16 @@ VALUES ('sasho_gramatikov', 'sasho_gramatikov_123', 'Сашо Граматико
        ('darko_sasanski', 'darko_sasanski_123', 'Дарко Сасански', 'darko.sasanski@finki.ukim.mk', 'ROLE_ASSISTANT_PROFESSOR');
 
 INSERT INTO subjects (name, code, professor_id)
-VALUES ('Web Programming', 'F23L3W024', 1),
-       ('Web Programming', 'F23L3W024', 2),
-       ('Web Programming', 'F23L3W024', 3),
-       ('Web Programming', 'F23L3W024', 4),
-       ('Web Programming', 'F23L3W024', 5),
-       ('Web Programming', 'F23L3W024',6),
-       ('Web Programming', 'F23L3W024', 7);
+VALUES ('Веб Програмирање', 'F23L3W024', 1),
+       ('Веб Програмирање', 'F23L3W024', 2),
+       ('Веб Програмирање', 'F23L3W024', 3),
+       ('Веб Програмирање', 'F23L3W024', 4),
+       ('Веб Програмирање', 'F23L3W024', 5),
+       ('Веб Програмирање', 'F23L3W024',6),
+       ('Веб Програмирање', 'F23L3W024', 7),
+       ('Оперативни Системи', 'F23L2S017', 1),
+       ('Архитектура и организација на компјутери', 'F23L1S003', 1),
+       ('Електронска и мобилна трговија', 'F23L3S025', 1);
 
 INSERT INTO classrooms (name, capacity, computer_availability)
 VALUES ('Lab-2', 20, 'WITH_COMPUTERS'),
