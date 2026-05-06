@@ -3,6 +3,7 @@ package mk.ukim.finki.wp.exam_room_manager.service.impl;
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.wp.exam_room_manager.model.Classroom;
 import mk.ukim.finki.wp.exam_room_manager.model.enums.ComputerAvailability;
+import mk.ukim.finki.wp.exam_room_manager.model.exceptions.ClassroomNotFoundException;
 import mk.ukim.finki.wp.exam_room_manager.repository.ClassroomRepository;
 import mk.ukim.finki.wp.exam_room_manager.service.ClassroomService;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,10 @@ public class ClassroomServiceImpl implements ClassroomService {
     @Override
     public List<Classroom> findByComputerAvailability(ComputerAvailability computer_availability) {
         return classroomRepository.findAllByComputerAvailability(computer_availability);
+    }
+
+    @Override
+    public Classroom findById(Long id) {
+        return classroomRepository.findById(id).orElseThrow(() -> new ClassroomNotFoundException(id));
     }
 }

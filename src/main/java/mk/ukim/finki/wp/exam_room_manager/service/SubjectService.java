@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface SubjectService {
     List<Subject> findByProfessor(Professor professor);
+    Subject findById(Long id);
 }

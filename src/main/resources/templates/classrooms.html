@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select Classrooms</title>
+</head>
+
+<style>
+    .date_display
+    {
+        font-weight: bold;
+    }
+    .date_display
+    {
+        font-weight: bold;
+    }
+    .classroom
+    {
+        padding: 12px 0;
+    }
+</style>
+
+<body>
+
+<h1>Available Classrooms</h1>
+<h2 th:text="${subject.name}"></h2>
+<p>
+    Date:
+    <span class="date_display" th:text="${#temporals.day(date)}"></span><span class="date_display" th:text="${#temporals.day(date) == 1 || #temporals.day(date) == 21 || #temporals.day(date) == 31 ? 'st' :
+                     (#temporals.day(date) == 2 || #temporals.day(date) == 22 ? 'nd' :
+                     (#temporals.day(date) == 3 || #temporals.day(date) == 23 ? 'rd' : 'th'))}">
+    </span>
+    <span class="date_display" th:text="${#temporals.format(date, 'MMMM yyyy')}"></span>
+</p>
+
+<form th:action="@{/exam/classrooms}" method="get">
+    <input type="hidden" name="subjectId" th:value="${subject.id}"/>
+    <input type="hidden" name="date" th:value="${date}"/>
+    <select name="computerAvailability">
+        <option value="">All Classrooms</option>
+        <option th:each="ca : ${computerAvailabilities}"
+                th:value="${ca}"
+                th:text="${ca}"
+                th:selected="${ca == selectedFilter}">
+        </option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+<form th:action="@{/exam/reserve}" method="post">
+    <input type="hidden" name="subjectId" th:value="${subject.id}"/>
+    <input type="hidden" name="date" th:value="${date}"/>
+
+    <label>Start Time: <input type="time" name="startTime" required/></label>
+    <label>Duration (minutes): <input type="number" name="duration" min="30" max="300" required/></label>
+    <label>Number of Students: <input type="number" name="numberOfStudents" min="1" required/></label>
+
+    <label>Exam Type:
+        <select name="examType" required>
+            <option value="">Select type</option>
+            <option th:each="et : ${examTypes}"
+                    th:value="${et}"
+                    th:text="${et}">
+            </option>
+        </select>
+    </label>
+
+    <div th:each="classroom : ${classrooms}" class="classroom">
+        <input type="checkbox" name="classroomIds" th:value="${classroom.id}"/>
+        <strong th:text="${classroom.name}"></strong>
+        -
+        <span>Capacity:</span>
+        <span th:text="${classroom.capacity}"></span>
+    </div>
+
+    <button type="submit">Reserve</button>
+</form>
+
+<a th:href="@{/dashboard}">Back to Dashboard</a>
+
+</body>
+</html>

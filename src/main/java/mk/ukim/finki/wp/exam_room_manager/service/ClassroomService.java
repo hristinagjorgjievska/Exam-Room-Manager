@@ -7,4 +7,5 @@ import java.util.List;
 public interface ClassroomService {
     List<Classroom> findAll();
     List<Classroom> findByComputerAvailability(ComputerAvailability computer_availability);
+    Classroom findById(Long id);
 }
