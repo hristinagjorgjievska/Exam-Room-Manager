@@ -25,7 +25,6 @@ CREATE TABLE exams (
     id BIGSERIAL PRIMARY KEY,
     exam_date DATE NOT NULL,
     start_time TIME NOT NULL,
-    exam_type VARCHAR(100) NOT NULL,
     duration INT NOT NULL,
     number_of_students INT NOT NULL,
     subject_id BIGINT REFERENCES subjects(id)

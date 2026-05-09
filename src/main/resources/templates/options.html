@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam Options</title>
+    <style>
+        body { font-family: sans-serif; max-width: 520px; margin: 40px auto; padding: 0 20px; }
+        h2 { color: #444; margin-bottom: 4px; }
+
+        .calendar {
+            display: inline-block;
+            border: 1px solid #ccc;
+            padding: 16px;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+        }
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .cal-header button {
+            background: none;
+            border: 1px solid #ccc;
+            padding: 4px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 18px;
+        }
+        .cal-header button:hover { background: #f0f0f0; }
+        #monthLabel { font-weight: 600; font-size: 16px; }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .cal-day-name {
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: #666;
+            padding: 6px 0;
+        }
+        .cal-day {
+            text-align: center;
+            padding: 8px 4px;
+            cursor: pointer;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            font-size: 14px;
+        }
+        .cal-day:hover { background: #e8edf9; }
+        .cal-day.selected { background: #2a52be; color: white; }
+        .cal-day.disabled { color: #ccc; cursor: default; pointer-events: none; }
+        .cal-day.empty { border: none; cursor: default; pointer-events: none; }
+        .cal-day.today { border-color: #2a52be; font-weight: 600; }
+
+        .selected-date { font-size: 13px; color: #444; margin-bottom: 16px; }
+        .selected-date strong { color: #2a52be; }
+
+        label { display: block; margin: 12px 0 4px; font-size: 14px; font-weight: 500; }
+        input, select {
+            width: 100%; padding: 8px 10px;
+            border: 1px solid #ccc; border-radius: 6px;
+            font-size: 14px; box-sizing: border-box;
+        }
+        button[type="submit"] {
+            margin-top: 20px; width: 100%; padding: 10px;
+            background: #2a52be; color: white;
+            border: none; border-radius: 6px;
+            font-size: 15px; cursor: pointer;
+        }
+        button[type="submit"]:hover { background: #1e3fa0; }
+        button[type="submit"]:disabled { background: #aab4d4; cursor: not-allowed; }
+        a { color: #2a52be; font-size: 13px; display: inline-block; margin-top: 16px; }
+    </style>
+</head>
+<body>
+
+<h1>Exam Details</h1>
+<h2 th:text="${subject.name}"></h2>
+
+<form th:action="@{/exam/classrooms}" method="get">
+    <input type="hidden" name="subjectId" th:value="${subject.id}"/>
+
+    <input type="hidden" name="date" id="selectedDate"/>
+
+    <div class="calendar">
+        <div class="cal-header">
+            <button type="button" onclick="changeMonth(-1)">&#8249;</button>
+            <span id="monthLabel"></span>
+            <button type="button" onclick="changeMonth(1)">&#8250;</button>
+        </div>
+        <div class="cal-grid" id="calGrid">
+            <div class="cal-day-name">Mon</div>
+            <div class="cal-day-name">Tue</div>
+            <div class="cal-day-name">Wed</div>
+            <div class="cal-day-name">Thu</div>
+            <div class="cal-day-name">Fri</div>
+            <div class="cal-day-name">Sat</div>
+            <div class="cal-day-name">Sun</div>
+        </div>
+    </div>
+
+    <p class="selected-date">Selected date: <strong id="dateDisplay">None</strong></p>
+
+    <label>Start Time</label>
+    <input type="time" name="startTime" required/>
+
+    <label>Duration (minutes)</label>
+    <input type="number" name="duration" min="10" max="300" placeholder="e.g. 30" required/>
+
+    <label>Number of Students</label>
+    <input type="number" name="numberOfStudents" min="20" placeholder="e.g. 60" required/>
+
+    <button type="submit" id="continueBtn" disabled>See Available Classrooms →</button>
+</form>
+
+<a style="text-decoration: none" th:href="@{/dashboard}">← Back to Dashboard</a>
+
+<script>
+    var today = new Date();
+    var current = new Date(today.getFullYear(), today.getMonth(), 1);
+    var monthNames = ["January","February","March","April","May","June",
+        "July","August","September","October","November","December"];
+
+    function renderCalendar() {
+        var grid = document.getElementById('calGrid');
+        while (grid.children.length > 7) grid.removeChild(grid.lastChild);
+
+        document.getElementById('monthLabel').textContent =
+            monthNames[current.getMonth()] + ' ' + current.getFullYear();
+
+        var firstDay = new Date(current.getFullYear(), current.getMonth(), 1);
+        var daysInMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0).getDate();
+        var todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        var startOffset = (firstDay.getDay() + 6) % 7;
+
+        for (var i = 0; i < startOffset; i++) {
+            var empty = document.createElement('div');
+            empty.className = 'cal-day empty';
+            grid.appendChild(empty);
+        }
+
+        for (var d = 1; d <= daysInMonth; d++) {
+            let cell = document.createElement('div');
+            cell.className = 'cal-day';
+            cell.textContent = d;
+            var cellDate = new Date(current.getFullYear(), current.getMonth(), d);
+
+            if (cellDate.getTime() === todayMidnight.getTime()) cell.classList.add('today');
+
+            if (cellDate < todayMidnight) {
+                cell.classList.add('disabled');
+            } else {
+                (function(date, dayNum) {
+                    cell.onclick = function() {
+                        var prev = grid.querySelector('.selected');
+                        if (prev) prev.classList.remove('selected');
+                        cell.classList.add('selected');
+
+                        var yyyy = date.getFullYear();
+                        var mm = String(date.getMonth() + 1).padStart(2, '0');
+                        var dd = String(dayNum).padStart(2, '0');
+                        var formatted = yyyy + '-' + mm + '-' + dd;
+
+                        document.getElementById('selectedDate').value = formatted;
+                        var suffix = (dayNum == 1 || dayNum == 21 || dayNum == 31) ? 'st' :
+                                     (dayNum == 2 || dayNum == 22) ? 'nd' :
+                                         (dayNum == 3 || dayNum == 23) ? 'rd' : 'th';
+                        var monthNames2 = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                        document.getElementById('dateDisplay').textContent = dayNum + suffix + ' ' + monthNames2[date.getMonth()] + ' ' + date.getFullYear();
+                        document.getElementById('continueBtn').disabled = false;
+                    };
+                })(cellDate, d);
+            }
+            grid.appendChild(cell);
+        }
+    }
+
+    function changeMonth(dir) {
+        current.setMonth(current.getMonth() + dir);
+        renderCalendar();
+    }
+
+    renderCalendar();
+</script>
+
+</body>
+</html>

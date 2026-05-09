@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Reservation</title>
+</head>
+<style>
+    .cancel {
+        padding: 7px 16px;
+        background: #c0392b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        font-family: Arial, sans-serif;
+    }
+</style>
+<body>
+
+<h1>Edit Reservation</h1>
+<h2 th:text="${reservation.exam.subject.name}"></h2>
+
+<form style="display: flex; flex-direction: column; padding-bottom: 15px" th:action="@{/reservations/edit/{id}(id=${reservation.id})}" method="post">
+
+    <label style="padding-bottom: 10px">Start Time:
+        <input type="time" name="startTime"
+               th:value="${reservation.exam.startTime}" required/>
+    </label>
+
+    <label style="padding-bottom: 10px">Duration (minutes):
+        <input type="number" name="duration"
+               th:value="${reservation.exam.duration}" min="30" max="300" required/>
+    </label>
+
+    <label style="padding-bottom: 10px">Number of Students:
+        <input type="number" name="numberOfStudents"
+               th:value="${reservation.exam.numberOfStudents}" min="1" required/>
+    </label>
+
+    <label style="padding-bottom: 10px">Classroom:
+        <select name="classroomId">
+            <option th:each="c : ${classrooms}"
+                    th:value="${c.id}"
+                    th:text="${c.name}"
+                    th:selected="${c.id == reservation.classroom.id}">
+            </option>
+        </select>
+    </label>
+
+    <button style="width: 200px" type="submit">Save Changes</button>
+</form>
+
+<a class="cancel" th:href="@{/reservations}">Cancel</a>
+
+</body>
+</html>

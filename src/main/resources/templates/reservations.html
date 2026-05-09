@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reservations</title>
+</head>
+
+<style>
+    body {
+        font-family: sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 14px;
+    }
+    .card h3 { margin: 0 0 8px; }
+    .card p  { margin: 4px 0; color: #444; font-size: 14px; }
+    .actions { margin-top: 12px; display: flex; gap: 10px; }
+    a.btn {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        text-decoration: none;
+        color: white;
+    }
+    .btn-edit   { background: #2a52be; }
+    .btn-delete { background: #c0392b; }
+    .btn-edit:hover   { background: #1e3fa0; }
+    .btn-delete:hover { background: #a62717; }
+</style>
+
+<body>
+
+<h1>All Reservations</h1>
+
+<p th:if="${#lists.isEmpty(reservations)}">No reservations found.</p>
+
+<form style="padding-bottom: 15px" th:action="@{/reservations}" method="get">
+    <select style="width: 595px; height: 40px" name="subjectId">
+        <option value="">All Subjects</option>
+        <option th:each="subject : ${subjects}"
+                th:value="${subject.id}"
+                th:text="${subject.name}"
+                th:selected="${subject.id == selectedSubjectId}">
+        </option>
+    </select>
+    <button style="width: 200px; height: 40px" type="submit">Filter</button>
+</form>
+
+<div th:each="reservation : ${reservations}" class="card">
+    <h3 th:text="${reservation.exam.subject.name}"></h3>
+    <p>📅 Date:
+        <strong th:text="${#temporals.day(reservation.exam.examDate)}"></strong><strong th:text="${#temporals.day(reservation.exam.examDate) == 1 || #temporals.day(reservation.exam.examDate) == 21 || #temporals.day(reservation.exam.examDate) == 31 ? 'st' :
+             (#temporals.day(reservation.exam.examDate) == 2 || #temporals.day(reservation.exam.examDate) == 22 ? 'nd' :
+             (#temporals.day(reservation.exam.examDate) == 3 || #temporals.day(reservation.exam.examDate) == 23 ? 'rd' : 'th'))}"></strong>
+        <strong th:text="${#temporals.format(reservation.exam.examDate, 'MMMM yyyy')}"></strong>
+    </p>
+    <p>🕐 Start time: <strong th:text="${reservation.exam.startTime}"></strong></p>
+    <p>⏱ Duration:<strong th:text="${reservation.exam.duration / 60 > 0 ? reservation.exam.duration / 60 + 'h ' : ''} + ${reservation.exam.duration % 60 > 0 ? reservation.exam.duration % 60 + 'min' : ''}"></strong></p>
+    <p>👥 Students: <strong th:text="${reservation.classroom.capacity + ' / ' + reservation.exam.numberOfStudents}"></strong></p>
+    <p>🏫 Classroom: <strong th:text="${reservation.classroom.name}"></strong></p>
+
+    <div class="actions">
+        <a class="btn btn-edit" th:href="@{/reservations/edit/{id}(id=${reservation.id})}">Edit</a>
+        <a class="btn btn-delete" th:href="@{/reservations/delete/{id}(id=${reservation.id})}">Delete</a>
+    </div>
+</div>
+
+<a style="text-decoration: none" th:href="@{/dashboard}">← Back to Dashboard</a>
+
+</body>
+</html>

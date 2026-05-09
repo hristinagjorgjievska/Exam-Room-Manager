@@ -5,22 +5,42 @@
 </head>
 <body>
 
-<h1>Welcome, <span th:text="${professor.getFullName()}"></span></h1>
+<div style="display: flex">
+    <h1 style="padding-right: 130px">Welcome, <span th:text="${professor.getFullName()}"></span></h1>
 
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
-</form>
+    <div style="display: flex; justify-content: center; align-items: center">
+
+        <form th:action="@{/logout}" method="post">
+
+            <button style="margin: 10px; width: 200px" type="submit">Logout</button>
+
+        </form>
+
+        <form th:action="@{/reservations}" method="get">
+
+            <button style="margin: 10px; width: 200px" type="submit">My Reservations</button>
+
+        </form>
+
+    </div>
+</div>
 
 <h2>Your Subjects</h2>
 
 <p th:if="${#lists.isEmpty(subjects)}">You have no subjects assigned.</p>
 
 <div th:each="subject : ${subjects}">
-    <a th:href="@{/exam/calendar(subjectId=${subject.id})}">
+
+    <a style="text-decoration: none;" th:href="@{/exam/options(subjectId=${subject.id})}">
+
         <div>
+
             <h3 th:text="${subject.name} + ' - ' + ${subject.code}"></h3>
+
         </div>
+
     </a>
+
 </div>
 
 </body>

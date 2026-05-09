@@ -7,11 +7,15 @@
 
 <form th:action="@{/login}" method="post">
 
-    <input type="text" name="username" placeholder="Username"/>
+    <div style="display: flex; flex-direction: column; width: 300px; border-radius: 20px">
 
-    <input type="password" name="password" placeholder="Password"/>
+        <label style="padding: 10px;" for="username">Username: <input id="username" type="text" name="username" placeholder="Username"/></label>
 
-    <button type="submit">Login</button>
+        <label style="padding: 10px;" for="password">Password: <input id="password" type="password" name="password" placeholder="Password"/></label>
+
+        <button style="margin: 10px; width: 200px" type="submit">Login</button>
+
+    </div>
 
     <p th:if="${param.error}">Invalid username or password.</p>
 

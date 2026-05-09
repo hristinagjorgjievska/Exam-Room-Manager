@@ -2,9 +2,13 @@ package mk.ukim.finki.wp.exam_room_manager.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import mk.ukim.finki.wp.exam_room_manager.model.Classroom;
+import mk.ukim.finki.wp.exam_room_manager.model.Exam;
 import mk.ukim.finki.wp.exam_room_manager.model.Reservation;
+import mk.ukim.finki.wp.exam_room_manager.model.exceptions.ConflictException;
 import mk.ukim.finki.wp.exam_room_manager.model.exceptions.ReservationNotFoundException;
+import mk.ukim.finki.wp.exam_room_manager.repository.ExamRepository;
 import mk.ukim.finki.wp.exam_room_manager.repository.ReservationRepository;
+import mk.ukim.finki.wp.exam_room_manager.service.ClassroomService;
 import mk.ukim.finki.wp.exam_room_manager.service.ReservationService;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -16,6 +20,8 @@ import java.util.List;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final ClassroomService classroomService;
+    private final ExamRepository examRepository;
 
     @Override
     public boolean hasConflict(Reservation reservation) {
@@ -43,10 +49,17 @@ public class ReservationServiceImpl implements ReservationService {
         {
             if (hasConflict(reservation))
             {
-                throw new RuntimeException("Classroom " + reservation.getClassroom().getName() + " is already booked at that time.");
+                throw new ConflictException(reservation.getClassroom().getName());
             }
         }
         return reservationRepository.saveAll(reservations);
+    }
+
+    @Override
+    public List<Reservation> findAllBySubjectId(Long subjectId) {
+        return reservationRepository.findAll().stream()
+                .filter(r -> r.getExam().getSubject().getId().equals(subjectId))
+                .toList();
     }
 
     @Override
@@ -60,23 +73,20 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Reservation create(Reservation reservation) {
-        if (hasConflict(reservation)) {
-            throw new RuntimeException("Reservation conflict exists");
-        }
-        return reservationRepository.save(reservation);
-    }
-
-    @Override
-    public Reservation update(Long id, Reservation reservation) {
+    public Reservation update(Long id, LocalTime startTime, int duration, int numberOfStudents, Long classroomId) {
         Reservation existingReservation = reservationRepository.findById(id).orElseThrow(() -> new ReservationNotFoundException(id));
-        existingReservation.setClassroom(reservation.getClassroom());
-        existingReservation.setExam(reservation.getExam());
+        existingReservation.getExam().setStartTime(startTime);
+        existingReservation.getExam().setDuration(duration);
+        existingReservation.getExam().setNumberOfStudents(numberOfStudents);
+        existingReservation.setClassroom(classroomService.findById(classroomId));
         return reservationRepository.save(existingReservation);
     }
 
     @Override
-    public void delete(Long id) {
-        this.reservationRepository.deleteById(id);
+    public void deleteById(Long id) {
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
+        Exam exam = reservation.getExam();
+        reservationRepository.delete(reservation);
+        examRepository.delete(exam);
     }
 }

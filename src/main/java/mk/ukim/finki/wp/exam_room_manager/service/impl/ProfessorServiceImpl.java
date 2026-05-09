@@ -24,9 +24,7 @@ public class ProfessorServiceImpl implements ProfessorService, UserDetailsServic
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Professor professor = professorRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("A professor with the username: " + username + " wasn't found in the database"));
-
+        Professor professor = professorRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         return new org.springframework.security.core.userdetails.User(professor.getUsername(), professor.getPassword(), List.of(new SimpleGrantedAuthority(professor.getProfessorRole().name())));
     }
 }

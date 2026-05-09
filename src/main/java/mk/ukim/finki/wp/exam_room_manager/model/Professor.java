@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mk.ukim.finki.wp.exam_room_manager.model.enums.ProfessorRole;
-
 import java.util.ArrayList;
 import java.util.List;
 
