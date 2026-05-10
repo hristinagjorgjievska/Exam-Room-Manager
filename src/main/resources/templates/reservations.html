@@ -63,10 +63,16 @@
     <p>⏱ Duration:<strong th:text="${reservation.exam.duration / 60 > 0 ? reservation.exam.duration / 60 + 'h ' : ''} + ${reservation.exam.duration % 60 > 0 ? reservation.exam.duration % 60 + 'min' : ''}"></strong></p>
     <p>👥 Students: <strong th:text="${reservation.classroom.capacity + ' / ' + reservation.exam.numberOfStudents}"></strong></p>
     <p>🏫 Classroom: <strong th:text="${reservation.classroom.name}"></strong></p>
+    <p>👤 Reserved by: <strong th:text="${reservation.exam.subject.professor.fullName}"></strong></p>
 
     <div class="actions">
-        <a class="btn btn-edit" th:href="@{/reservations/edit/{id}(id=${reservation.id})}">Edit</a>
-        <a class="btn btn-delete" th:href="@{/reservations/delete/{id}(id=${reservation.id})}">Delete</a>
+
+        <a class="btn btn-edit" th:if="${reservation.exam.subject.professor.id == loggedInProfessor.id}" th:href="@{/reservations/edit/{id}(id=${reservation.id})}">Edit</a>
+
+        <a class="btn btn-delete" th:if="${reservation.exam.subject.professor.id == loggedInProfessor.id}" th:href="@{/reservations/delete/{id}(id=${reservation.id})}">Delete</a>
+
+        <span th:if="${reservation.exam.subject.professor.id != loggedInProfessor.id}" style="font-size: 13px; color: #aaa;">Not your reservation</span>
+
     </div>
 </div>
 

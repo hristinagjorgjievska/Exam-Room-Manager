@@ -48,18 +48,36 @@ public class ReservationController {
         model.addAttribute("reservations", reservations);
         model.addAttribute("subjects", subjects);
         model.addAttribute("selectedSubjectId", subjectId);
+        model.addAttribute("loggedInProfessor", professor);
         return "reservations";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id,
+                         @AuthenticationPrincipal UserDetails userDetails) {
+        Professor loggedIn = professorService.findByUsername(userDetails.getUsername());
+        Reservation reservation = reservationService.findById(id);
+
+        if (!reservation.getExam().getSubject().getProfessor().getId().equals(loggedIn.getId())) {
+            return "redirect:/reservations";
+        }
+
         reservationService.deleteById(id);
         return "redirect:/reservations";
     }
 
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable Long id, Model model) {
-        model.addAttribute("reservation", reservationService.findById(id));
+    public String editForm(@PathVariable Long id,
+                           Model model,
+                           @AuthenticationPrincipal UserDetails userDetails) {
+        Professor loggedIn = professorService.findByUsername(userDetails.getUsername());
+        Reservation reservation = reservationService.findById(id);
+
+        if (!reservation.getExam().getSubject().getProfessor().getId().equals(loggedIn.getId())) {
+            return "redirect:/reservations";
+        }
+
+        model.addAttribute("reservation", reservation);
         model.addAttribute("classrooms", classroomService.findAll());
         return "edit-reservation";
     }

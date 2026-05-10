@@ -7,7 +7,7 @@
 
 ## 📌 Project Description
 
-A web application for professors and assistant professors to schedule and reserve classrooms for exams at the faculty. Professors / Assistant professors can log in, view their assigned subjects, pick an exam date using an interactive calendar, browse available classrooms, and reserve one or more rooms for a specific exam slot — with automatic conflict detection to prevent double-booking.
+A web application for professors and assistant professors to schedule and reserve classrooms for exams at the faculty. Professors can log in, view their assigned subjects, pick an exam date using an interactive inline calendar, fill in exam details, browse available classrooms with automatic conflict detection, and reserve one or more rooms — with unavailable rooms clearly marked.
 
 ---
 
@@ -15,12 +15,15 @@ A web application for professors and assistant professors to schedule and reserv
 
 - 🔐 **Professor Authentication** — Secure login with Spring Security
 - 📋 **Subject Dashboard** — Each professor sees only their own subjects
-- 📅 **Interactive Calendar** — Pick an exam date from an always-open inline calendar
-- 🏫 **Classroom Browser** — View available classrooms as cards with capacity and computer availability info
+- 📅 **Interactive Inline Calendar** — Always-open calendar for picking an exam date with past dates disabled
+- 🕐 **Exam Details Form** — Input start time, duration, number of students, and exam type before seeing classrooms
+- 🏫 **Classroom Browser** — All classrooms displayed with capacity and computer availability
+- 🔵 **Availability Detection** — Classrooms already booked for the selected time slot are shown with a blue background and marked UNAVAILABLE
 - 🔍 **Filtering** — Filter classrooms by computer availability (`WITH_COMPUTERS` / `WITHOUT_COMPUTERS`)
 - 📝 **Exam Type Selection** — Choose between `MIDTERM` and `FINAL_EXAM`
-- ✅ **Reservation System** — Select one or more classrooms and reserve them for an exam
-- ⚠️ **Conflict Detection** — Automatically detects and blocks overlapping reservations for the same classroom
+- ✅ **Reservation System** — Select one or more available classrooms and reserve them
+- 📋 **Reservation Management** — View all reservations with full details, filter by subject, edit, or delete
+- ⚠️ **Conflict Detection** — Automatically prevents double-booking of the same classroom at overlapping times
 
 ---
 
@@ -79,7 +82,8 @@ mk.ukim.finki.wp.exam_room_manager
 └── web/
     ├── AuthController.java
     ├── DashboardController.java
-    └── ExamController.java
+    ├── ExamController.java
+    └── ReservationController.java
 ```
 
 ---
@@ -135,6 +139,7 @@ spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=validate
 spring.flyway.enabled=true
 spring.flyway.locations=classpath:db/migration
+spring.flyway.validate-on-migrate=false
 spring.thymeleaf.cache=false
 ```
 
@@ -155,6 +160,7 @@ http://localhost:8080/login
 | Username | Password | Role |
 |----------|----------|------|
 | `sasho_gramatikov` | `sasho_gramatikov_123` | Professor |
+| `dimitar_trajanov` | `dimitar_trajanov_123` | Professor |
 | `ana_todorovska` | `ana_todorovska_123` | Assistant Professor |
 | `darko_sasanski` | `darko_sasanski_123` | Assistant Professor |
 
@@ -163,8 +169,21 @@ http://localhost:8080/login
 ## 📸 Application Flow
 
 ```
-Login → Dashboard (subjects) → Calendar (pick date) → Classrooms (filter & select) → Exam Details (time, duration, students, exam type) → Reserve → Redirect to Dashboard
+Login → Dashboard (subjects) → Options (calendar + time + duration + students + exam type) → Classrooms (available/unavailable) → Reserve → Reservations (view, filter, edit, delete)
 ```
+
+---
+
+## 🖥️ Pages
+
+| Page | URL | Description |
+|------|-----|-------------|
+| Login | `/login` | Professor login form |
+| Dashboard | `/dashboard` | Subject list for logged-in professor |
+| Options | `/exam/options` | Calendar + exam detail inputs |
+| Classrooms | `/exam/classrooms` | Available classrooms with conflict highlighting |
+| Reservations | `/reservations` | All reservations with CRUD operations |
+| Edit Reservation | `/reservations/edit/{id}` | Edit an existing reservation |
 
 ---
 
@@ -179,17 +198,17 @@ Login → Dashboard (subjects) → Calendar (pick date) → Classrooms (filter &
 
 ## 👨‍💻 Authors
 
-**Ognen Mladenovski - 233108**  
-Faculty of Computer Science and Engineering (FINKI)  
-Ss. Cyril and Methodius University, Skopje  
+**Ognen Mladenovski - 233108**
+Faculty of Computer Science and Engineering (FINKI)
+Ss. Cyril and Methodius University, Skopje
 Course: Web Programming
 
-**Hristina Gjorgjievska - 233215**  
-Faculty of Computer Science and Engineering (FINKI)  
-Ss. Cyril and Methodius University, Skopje  
+**Hristina Gjorgjievska - 233215**
+Faculty of Computer Science and Engineering (FINKI)
+Ss. Cyril and Methodius University, Skopje
 Course: Web Programming
 
-**Evica Isaevska - 233245**  
-Faculty of Computer Science and Engineering (FINKI)  
-Ss. Cyril and Methodius University, Skopje  
+**Evica Isaevska - 233245**
+Faculty of Computer Science and Engineering (FINKI)
+Ss. Cyril and Methodius University, Skopje
 Course: Web Programming
