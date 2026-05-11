@@ -75,6 +75,21 @@
         button[type="submit"]:hover { background: #1e3fa0; }
         button[type="submit"]:disabled { background: #aab4d4; cursor: not-allowed; }
         a { color: #2a52be; font-size: 13px; display: inline-block; margin-top: 16px; }
+
+        .predict-row { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+        .predict-row input[type="number"] { flex: 1; margin: 0; }
+        #predictBtn {
+            flex-shrink: 0; padding: 8px 14px;
+            background: #f0f4ff; color: #2a52be;
+            border: 1.5px solid #2a52be; border-radius: 6px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+        }
+        #predictionResult {
+            display: none; margin-top: 8px; padding: 10px 14px;
+            background: #eef2ff; border-left: 3px solid #2a52be;
+            border-radius: 0 6px 6px 0; font-size: 13px;
+        }
+        #predictionResult.error { background: #fff0f0; border-color: #c0392b; color: #c0392b; }
     </style>
 </head>
 <body>
@@ -113,7 +128,11 @@
     <input type="number" name="duration" min="10" max="300" placeholder="e.g. 30" required/>
 
     <label>Number of Students</label>
-    <input type="number" name="numberOfStudents" min="20" placeholder="e.g. 60" required/>
+    <div class="predict-row">
+    <input type="number" name="numberOfStudents" id="numberOfStudents" min="20" placeholder="e.g. 60" required/>
+    <button type="button" id="predictBtn" onclick="predictAttendance()">Predict Attendance</button>
+    </div>
+    <div id="predictionResult"></div>
 
     <button type="submit" id="continueBtn" disabled>See Available Classrooms →</button>
 </form>
@@ -186,7 +205,54 @@
     }
 
     renderCalendar();
-</script>
 
+    var PREDICTION_API = 'http://localhost:8000/predict';
+
+    function predictAttendance() {
+        var enrolled_num_students = parseInt(document.getElementById('numberOfStudents').value, 10);
+        var predictionResult = document.getElementById('predictionResult');
+        var predictionButton = document.getElementById('predictBtn');
+
+        if (!enrolled_num_students || enrolled_num_students < 1) {
+            predictionResult.className = 'error';
+            predictionResult.style.display = 'block';
+            predictionResult.textContent = 'Invalid input. The number of students must be greater than 0.';
+            return;
+        }
+
+        var subjectId = parseInt(document.querySelector('input[name="subjectId"]').value, 10);
+
+        predictionButton.disabled = true;
+        predictionButton.textContent = 'Predicting';
+        predictionResult.style.display = 'none';
+
+        fetch(PREDICTION_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({subject_id: subjectId, enrolled_survey: enrolled_num_students})
+        })
+            .then(function(result) {
+                if (!result.ok) throw new Error('API error: ' + result.status);
+                return result.json();
+            })
+            .then(function(data) {
+                var attendance_rate = Math.round(data.attendance_rate * 100);
+                predictionResult.className = '';
+                predictionResult.style.display = 'block';
+                predictionResult.innerHTML =
+                    'Предвиден attendance: <strong>' + data.predicted_attendance + ' студенти</strong>' + ' (' + attendance_rate + '% од пријавените)';
+            })
+            .catch(function(err) {
+                predictionResult.className = 'error';
+                predictionResult.style.display = 'block';
+                predictionResult.textContent = 'ML service error. Check if FastAPI is running on port 8000.';
+                console.error(err);
+            })
+            .finally(function() {
+                predictionButton.disabled = false;
+                predictionButton.textContent = 'Predict Attendance';
+            });
+    }
+</script>
 </body>
 </html>
