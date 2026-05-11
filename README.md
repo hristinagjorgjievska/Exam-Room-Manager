@@ -116,6 +116,8 @@ reservations
 - Java 21+
 - PostgreSQL 17+
 - Maven
+- Python 3.11+
+- pip
 
 ### Setup
 
@@ -152,6 +154,32 @@ mvn spring-boot:run
 ```
 http://localhost:8080/login
 ```
+---
+
+## 🤖 ML Attendance Prediction (FastAPI)
+
+The application includes an ML service that predicts how many students will actually show up based on survey enrollment.
+
+### Prediction Model Setup
+
+1. Navigate to the ml/ folder
+   cd ml/
+
+2. Install dependencies
+   pip install fastapi uvicorn scikit-learn pandas joblib jupyter
+
+3. Train the model (run all cells in the notebook)
+   jupyter notebook attendance_prediction.ipynb
+
+4. Start the FastAPI server
+   python main.py
+
+The ML service runs on http://localhost:8000
+
+### Usage
+On the exam options page, enter the number of students and click **Predict Attendance** to get a prediction of how many students will actually show up.
+
+> ⚠️ The FastAPI server must be running alongside the Spring Boot application for the prediction feature to work.
 
 ---
 
@@ -159,10 +187,10 @@ http://localhost:8080/login
 
 | Username | Password | Role |
 |----------|----------|------|
-| `sasho_gramatikov` | `sasho_gramatikov_123` | Professor |
-| `dimitar_trajanov` | `dimitar_trajanov_123` | Professor |
-| `ana_todorovska` | `ana_todorovska_123` | Assistant Professor |
-| `darko_sasanski` | `darko_sasanski_123` | Assistant Professor |
+| `sasho_gramatikov` | `sasho_gramatikov` | Professor |
+| `dimitar_trajanov` | `dimitar_trajanov` | Professor |
+| `ana_todorovska` | `ana_todorovska` | Assistant Professor |
+| `darko_sasanski` | `darko_sasanski` | Assistant Professor |
 
 ---
 
@@ -176,14 +204,14 @@ Login → Dashboard (subjects) → Options (calendar + time + duration + student
 
 ## 🖥️ Pages
 
-| Page | URL | Description |
-|------|-----|-------------|
-| Login | `/login` | Professor login form |
-| Dashboard | `/dashboard` | Subject list for logged-in professor |
-| Options | `/exam/options` | Calendar + exam detail inputs |
+| Page | URL | Description                                     |
+|------|-----|-------------------------------------------------|
+| Login | `/login` | Professor login form                            |
+| Dashboard | `/dashboard` | Subject list for logged-in professor            |
+| Options | `/exam/options` | Calendar + exam detail inputs + ML attendance prediction |
 | Classrooms | `/exam/classrooms` | Available classrooms with conflict highlighting |
-| Reservations | `/reservations` | All reservations with CRUD operations |
-| Edit Reservation | `/reservations/edit/{id}` | Edit an existing reservation |
+| Reservations | `/reservations` | All reservations with CRUD operations           |
+| Edit Reservation | `/reservations/edit/{id}` | Edit an existing reservation                    |
 
 ---
 
