@@ -5,29 +5,25 @@
 
 ---
 
-## 📌 Project Description
+## Overview
 
-A web application for professors and assistant professors to schedule and reserve classrooms for exams at the faculty. Professors can log in, view their assigned subjects, pick an exam date using an interactive inline calendar, fill in exam details, browse available classrooms with automatic conflict detection, and reserve one or more rooms — with unavailable rooms clearly marked.
-
----
-
-## 🎯 Core Features
-
-- 🔐 **Professor Authentication** — Secure login with Spring Security
-- 📋 **Subject Dashboard** — Each professor sees only their own subjects
-- 📅 **Interactive Inline Calendar** — Always-open calendar for picking an exam date with past dates disabled
-- 🕐 **Exam Details Form** — Input start time, duration, number of students, and exam type before seeing classrooms
-- 🏫 **Classroom Browser** — All classrooms displayed with capacity and computer availability
-- 🔵 **Availability Detection** — Classrooms already booked for the selected time slot are shown with a blue background and marked UNAVAILABLE
-- 🔍 **Filtering** — Filter classrooms by computer availability (`WITH_COMPUTERS` / `WITHOUT_COMPUTERS`)
-- 📝 **Exam Type Selection** — Choose between `MIDTERM` and `FINAL_EXAM`
-- ✅ **Reservation System** — Select one or more available classrooms and reserve them
-- 📋 **Reservation Management** — View all reservations with full details, filter by subject, edit, or delete
-- ⚠️ **Conflict Detection** — Automatically prevents double-booking of the same classroom at overlapping times
+A web application for professors and assistant professors to schedule and reserve classrooms for exams at the faculty. Professors can log in, view their assigned subjects, pick an exam date through a calendar, fill in exam details, browse available classrooms with automatic conflict detection, and reserve one or more rooms, with unavailable rooms clearly marked. The application also includes a machine learning model that predicts the expected student attendance based on enrollment data, helping the professors choose appropriately sized classrooms more accurately.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
+
+- **Professor Authentication** — Secure login with Spring Security.
+- **Subject Dashboard** — Each professor can see only the subjects that they have been assigned to in the last 2 semesters of the current year.
+- **Exam Details Form** — Input start time, duration, number of students, and exam type before seeing classrooms.
+- **Classroom Browser** — All classrooms displayed with capacity and computer availability.
+- **Availability Detection** — Classrooms already booked for the selected time slot are shown with a blue background and marked UNAVAILABLE.
+- **Filtering** — Filter classrooms by computer availability (`WITH_COMPUTERS` / `WITHOUT_COMPUTERS`)
+- **Attendance Prediction** - A machine learning service that predicts the actual number of students expected to attend an exam based on survey/enrollment data.
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -40,10 +36,11 @@ A web application for professors and assistant professors to schedule and reserv
 | Migrations | Flyway |
 | Build Tool | Maven |
 | Utilities | Lombok |
+| ML Service | FastAPI |
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a standard **layered architecture**:
 
@@ -88,7 +85,7 @@ mk.ukim.finki.wp.exam_room_manager
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 ```
 professors
@@ -109,17 +106,7 @@ reservations
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Java 21+
-- PostgreSQL 17+
-- Maven
-- Python 3.11+
-- pip
-
-### Setup
+### Project Setup
 
 **1. Clone the repository**
 ```bash
@@ -156,10 +143,6 @@ http://localhost:8080/login
 ```
 ---
 
-## 🤖 ML Attendance Prediction (FastAPI)
-
-The application includes an ML service that predicts how many students will actually show up based on survey enrollment.
-
 ### Prediction Model Setup
 
 1. Navigate to the ml/ folder
@@ -179,11 +162,11 @@ The ML service runs on http://localhost:8000
 ### Usage
 On the exam options page, enter the number of students and click **Predict Attendance** to get a prediction of how many students will actually show up.
 
-> ⚠️ The FastAPI server must be running alongside the Spring Boot application for the prediction feature to work.
+> The FastAPI server must be running alongside the Spring Boot application for the prediction feature to work.
 
 ---
 
-## 👤 Test Credentials
+## Test Credentials
 
 | Username | Password | Role |
 |----------|----------|------|
@@ -194,7 +177,7 @@ On the exam options page, enter the number of students and click **Predict Atten
 
 ---
 
-## 📸 Application Flow
+## Flow
 
 ```
 Login → Dashboard (subjects) → Options (calendar + time + duration + students + exam type) → Classrooms (available/unavailable) → Reserve → Reservations (view, filter, edit, delete)
@@ -202,7 +185,7 @@ Login → Dashboard (subjects) → Options (calendar + time + duration + student
 
 ---
 
-## 🖥️ Pages
+## Pages
 
 | Page | URL | Description                                     |
 |------|-----|-------------------------------------------------|
@@ -215,7 +198,7 @@ Login → Dashboard (subjects) → Options (calendar + time + duration + student
 
 ---
 
-## 📄 Flyway Migrations
+## Flyway Migrations
 
 | Version | Description |
 |---------|-------------|
@@ -224,19 +207,8 @@ Login → Dashboard (subjects) → Options (calendar + time + duration + student
 
 ---
 
-## 👨‍💻 Authors
+## Team
 
-**Ognen Mladenovski - 233108**
-Faculty of Computer Science and Engineering (FINKI)
-Ss. Cyril and Methodius University, Skopje
-Course: Web Programming
-
-**Hristina Gjorgjievska - 233215**
-Faculty of Computer Science and Engineering (FINKI)
-Ss. Cyril and Methodius University, Skopje
-Course: Web Programming
-
-**Evica Isaevska - 233245**
-Faculty of Computer Science and Engineering (FINKI)
-Ss. Cyril and Methodius University, Skopje
-Course: Web Programming
+- **Ognen Mladenovski** - 233108
+- **Hristina Gjorgjievska** - 233215
+- **Evica Isaevska** - 233245
