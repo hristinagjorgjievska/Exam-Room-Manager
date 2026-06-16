@@ -1,5 +1,4 @@
-# 📚 Апликација за управување со просторни ресурси за испити
-### Exam Room Manager
+# 📚 Exam room resource management application
 
 > Project for the course **Web Programming** at the Faculty of Computer Science and Engineering (FINKI), Ss. Cyril and Methodius University, Skopje.
 
