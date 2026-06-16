@@ -1,4 +1,4 @@
-# 📚 Exam room resource management application
+# Exam room resource management application
 
 > Project for the course **Web Programming** at the Faculty of Computer Science and Engineering (FINKI), Ss. Cyril and Methodius University, Skopje.
 
@@ -18,7 +18,7 @@ A web application for professors and assistant professors to schedule and reserv
 - **Classroom Browser** — All classrooms displayed with capacity and computer availability.
 - **Availability Detection** — Classrooms already booked for the selected time slot are shown with a blue background and marked UNAVAILABLE.
 - **Filtering** — Filter classrooms by computer availability (`WITH_COMPUTERS` / `WITHOUT_COMPUTERS`)
-- **Attendance Prediction** - A machine learning service that predicts the actual number of students expected to attend an exam based on survey/enrollment data.
+- **Attendance Prediction** - A machine learning model that predicts the actual number of students expected to attend an exam based on survey/enrollment data.
 
 ---
 
