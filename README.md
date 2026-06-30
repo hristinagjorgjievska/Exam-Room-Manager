@@ -130,7 +130,7 @@ cd ml/
 ```
 
 **2. Install dependencies**
-```python
+```bash
 pip install fastapi uvicorn scikit-learn pandas joblib jupyter
 ```
 
