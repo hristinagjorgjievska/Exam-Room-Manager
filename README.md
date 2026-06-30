@@ -16,7 +16,7 @@ A web application for professors and assistant professors to schedule and reserv
 - **Subject Dashboard** — Each professor can see only the subjects that they have been assigned to in the last 2 semesters of the current year.
 - **Exam Details Form** — Input start time, duration, number of students, and exam type before seeing classrooms.
 - **Classroom Browser** — All classrooms displayed with capacity and computer availability.
-- **Availability Detection** — Classrooms already booked for the selected time slot are shown with a blue background and marked UNAVAILABLE.
+- **Conflict Detection** — Classrooms already booked for the selected time slot are shown with a blue background and marked UNAVAILABLE.
 - **Filtering** — Filter classrooms by computer availability (`WITH_COMPUTERS` / `WITHOUT_COMPUTERS`)
 - **Attendance Prediction** - A machine learning model that predicts the actual number of students expected to attend an exam based on survey/enrollment data.
 
@@ -31,11 +31,11 @@ A web application for professors and assistant professors to schedule and reserv
 | ORM | Spring Data JPA / Hibernate |
 | Security | Spring Security |
 | Templating | Thymeleaf |
-| Database | PostgreSQL 17 |
+| Database | PostgreSQL |
 | Migrations | Flyway |
 | Build Tool | Maven |
 | Utilities | Lombok |
-| ML Service | FastAPI |
+| ML Service | FastAPI / Pyhton |
 
 ---
 
@@ -123,19 +123,27 @@ http://localhost:8080/login
 
 ### Prediction Model Setup
 
-1. Navigate to the ml/ folder
-   cd ml/
+**1. Navigate to the ml/ folder**
+```
+cd ml/
+```
 
-2. Install dependencies
-   pip install fastapi uvicorn scikit-learn pandas joblib jupyter
+**2. Install dependencies**
+```
+pip install fastapi uvicorn scikit-learn pandas joblib jupyter
+```
 
-3. Train the model (run all cells in the notebook)
-   jupyter notebook attendance_prediction.ipynb
+**3. Train the model (run all cells in the notebook)**
+```
+jupyter notebook attendance_prediction.ipynb
+```
 
-4. Start the FastAPI server
-   python main.py
+**4. Start the FastAPI server**
+```
+python main.py
+```
 
-The ML service runs on http://localhost:8000
+The ML service runs on **http://localhost:8000**
 
 ### Usage
 On the exam options page, enter the number of students and click **Predict Attendance** to get a prediction of how many students will actually show up.
@@ -144,21 +152,29 @@ On the exam options page, enter the number of students and click **Predict Atten
 
 ---
 
-## Test Credentials
+## Test Login Credentials
 
 | Username | Password | Role |
 |----------|----------|------|
 | `sasho_gramatikov` | `sasho_gramatikov` | Professor |
-| `dimitar_trajanov` | `dimitar_trajanov` | Professor |
 | `ana_todorovska` | `ana_todorovska` | Assistant Professor |
-| `darko_sasanski` | `darko_sasanski` | Assistant Professor |
 
 ---
 
 ## Flow
 
 ```
-Login → Dashboard (subjects) → Options (calendar + time + duration + students + exam type) → Classrooms (available/unavailable) → Reserve → Reservations (view, filter, edit, delete)
+Login
+  ↓
+Dashboard (subjects)
+  ↓
+Options (calendar + time + duration + students + exam type)
+  ↓
+Classrooms (available/unavailable)
+  ↓
+Reserve
+  ↓
+Reservations (view, filter, edit, delete)
 ```
 
 ---
